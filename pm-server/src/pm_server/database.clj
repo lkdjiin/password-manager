@@ -50,7 +50,7 @@
         result (sql/insert! db :sites {:name c-site-name :password c-site-pwd})
         site-id (last-inserted-id result)]
     (doseq [property properties]
-      (sql/insert! db :properties (property-data site-id property))))
+      (sql/insert! db :properties (property-data main-pwd site-id property))))
   "ok")
 
 (defn- last-inserted-id
@@ -59,5 +59,7 @@
   ((first (keys (first insertion-status))) (first insertion-status)))
 
 (defn- property-data
-  [id property]
-  {:site_id id :key (name (first property)) :value (last property)})
+  [main-pwd id property]
+  (let [k (crypt/encrypt (name (first property)) main-pwd)
+        v (crypt/encrypt (last property) main-pwd)]
+    {:site_id id :key k :value v}))
