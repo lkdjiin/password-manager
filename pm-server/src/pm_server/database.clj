@@ -16,8 +16,9 @@
 
 (defn show
   [main-pwd site-name]
-  (let [result (sql/query db [show-query site-name])
-        password (:password (first result))]
+  (let [c-site-name (crypt/encrypt site-name main-pwd)
+        result (sql/query db [show-query c-site-name])
+        password (crypt/decrypt (:password (first result)) main-pwd)]
     (if (properties? result)
       (str password "\n" (properties-string result))
       password)))
