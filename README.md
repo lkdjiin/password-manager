@@ -1,5 +1,7 @@
 # Password Manager
 
+[![Build Status](https://travis-ci.org/lkdjiin/password-manager.svg?branch=master)](https://travis-ci.org/lkdjiin/password-manager)
+
 I'm writing this app as part of my journey to learn the Clojure language.
 It's a command line password manager utility, heavily inspired by
 [pass](https://www.passwordstore.org/).

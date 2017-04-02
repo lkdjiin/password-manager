@@ -1,0 +1,8 @@
+language: clojure
+jdk:
+  - oraclejdk8
+env:
+  - TEST_DIR=pm
+  - TEST_DIR=pm-server
+install: true
+script: cd $TEST_DIR && lein deps && lein test
