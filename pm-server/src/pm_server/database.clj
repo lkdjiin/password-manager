@@ -35,6 +35,7 @@
   [main-pwd]
   (->> (sql/query db ["SELECT name FROM sites"])
        (map #(:name %))
+       (map #(crypt/decrypt % main-pwd))
        (clojure.string/join "\n")))
 
 (defn rm
