@@ -1,5 +1,6 @@
 (ns pm-server.database
-  (:require [clojure.java.jdbc :as sql]))
+  (:require [clojure.java.jdbc :as sql]
+            [pm-server.crypt :as crypt]))
 
 (declare last-inserted-id property-data properties? properties-string)
 
@@ -42,7 +43,9 @@
 
 (defn insert
   [main-pwd site-name site-pwd properties]
-  (let [result (sql/insert! db :sites {:name site-name :password site-pwd})
+  (let [c-site-name (crypt/encrypt site-name main-pwd)
+        c-site-pwd (crypt/encrypt site-pwd main-pwd)
+        result (sql/insert! db :sites {:name c-site-name :password c-site-pwd})
         site-id (last-inserted-id result)]
     (doseq [property properties]
       (sql/insert! db :properties (property-data site-id property))))
