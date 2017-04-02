@@ -40,7 +40,7 @@
 
 (defn rm
   [main-pwd site-name]
-  (sql/delete! db :sites ["name=?" site-name])
+  (sql/delete! db :sites ["name=?" (crypt/encrypt site-name main-pwd)])
   "ok")
 
 (defn insert
