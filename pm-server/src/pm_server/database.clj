@@ -20,7 +20,7 @@
         result (sql/query db [show-query c-site-name])
         password (crypt/decrypt (:password (first result)) main-pwd)]
     (if (properties? result)
-      (str password "\n" (properties-string result))
+      (str password "\n" (properties-string main-pwd result))
       password)))
 
 (defn- properties?
@@ -28,8 +28,8 @@
   (:key (first sql-result)))
 
 (defn- properties-string
-  [sql-result]
-  (clojure.string/join "\n" (map #(str (:key %) ": " (:value %)) sql-result)))
+  [main-pwd sql-result]
+  (clojure.string/join "\n" (map #(str (:key (crypt/decrypt % main-pwd)) ": " (:value (crypt/decrypt % main-pwd))) sql-result)))
 
 (defn list_
   [main-pwd]
