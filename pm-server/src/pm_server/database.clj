@@ -27,9 +27,13 @@
   [sql-result]
   (:key (first sql-result)))
 
-(defn- properties-string
+(defn properties-string
   [main-pwd sql-result]
-  (clojure.string/join "\n" (map #(str (:key (crypt/decrypt % main-pwd)) ": " (:value (crypt/decrypt % main-pwd))) sql-result)))
+  (defn in-clear [value] (crypt/decrypt value main-pwd))
+  (->>
+    sql-result
+    (map #(str (in-clear (:key %)) " " (in-clear (:value %))))
+    (clojure.string/join "\n")))
 
 (defn list_
   [main-pwd]
