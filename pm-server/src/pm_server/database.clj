@@ -2,7 +2,8 @@
   (:require [clojure.java.jdbc :as sql]
             [pm-server.crypt :as crypt]))
 
-(declare last-inserted-id property-data properties? properties-string)
+(declare last-inserted-id property-data properties? properties-string
+         entry-for-list props-for-list)
 
 (def db-filename (str (System/getProperty "user.home") "/.pm/db.sqlite"))
 (def connection-uri (str "jdbc:sqlite:" db-filename "?foreign_keys=on;"))
@@ -13,6 +14,12 @@
                      "from sites "
                      "left join properties on sites.id = properties.site_id "
                      "where sites.name = ?"))
+
+(def list-query (str "select sites.name, "
+                     "group_concat(properties.value, ' ') as props "
+                     "from sites "
+                     "left join properties on sites.id = properties.site_id "
+                     "group by sites.name;"))
 
 (defn show
   [main-pwd site-name]
@@ -37,10 +44,23 @@
 
 (defn list_
   [main-pwd]
-  (->> (sql/query db ["SELECT name FROM sites"])
-       (map #(:name %))
-       (map #(crypt/decrypt % main-pwd))
+  (->> (sql/query db [list-query])
+       (map #(entry-for-list main-pwd %))
        (clojure.string/join "\n")))
+
+(defn entry-for-list
+  [main-pwd entry]
+  (let [site (crypt/decrypt (:name entry) main-pwd)]
+    (if (nil? (:props entry))
+      site
+      (props-for-list main-pwd site (:props entry)))))
+
+(defn- props-for-list
+  [main-pwd site props]
+  (let [decrypted (->> (clojure.string/split props #" ")
+                       (map #(crypt/decrypt % main-pwd))
+                       (clojure.string/join ", "))]
+    (str site " (" decrypted ")")))
 
 (defn rm
   [main-pwd site-name]
