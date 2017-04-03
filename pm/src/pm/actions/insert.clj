@@ -8,7 +8,7 @@
 
 (defn action
   [[site password & properties]]
-  (let [mapping {:q site :p password}
+  (let [mapping (merge {:q site :p password} (apply hash-map properties))
         result (curl-command mapping)
         status (:exit result)]
     (if (= status 0)

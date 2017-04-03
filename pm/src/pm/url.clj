@@ -20,7 +20,7 @@
 
 (defn- query-key
   [pair]
-  (name (first pair)))
+  (url-encode (name (first pair))))
 
 (defn- query-value
   [pair]

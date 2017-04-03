@@ -8,5 +8,7 @@
 
 (deftest test-query-string
   (is (= (query-string {:q "foo/bar"}) "q=foo%2Fbar"))
-  (is (= (query-string {:q "foo/bar" :p "a b"}) "q=foo%2Fbar&p=a+b")))
-
+  (is (= (query-string {:q "foo/bar" :p "a b"}) "q=foo%2Fbar&p=a+b"))
+  (let [mapping {:q "foo.io" :p "pass" "user:" "xavier" "cat:" "game"}
+        expected "q=foo.io&p=pass&user%3A=xavier&cat%3A=game"]
+    (is (= (query-string mapping) expected))))
