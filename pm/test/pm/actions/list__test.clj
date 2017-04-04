@@ -8,9 +8,12 @@
 
 (deftest test-action
   (let [response {:exit 0 :out "web/foo.com\ncb/cic.fr\nweb/bar.com" :err ""}
+        failed {:exit 7 :out "" :err "conn. failed"}
         expected "cb/cic.fr\nweb/bar.com\nweb/foo.com"]
     (with-redefs [curl-command (fn [] response)]
-      (is (= (action) expected)))))
+      (is (= (action) expected)))
+    (with-redefs [curl-command (fn [] failed)]
+      (is (= (action) msg-locked)))))
 
 (deftest test-format-output
   (is (= (format-output "foo.com") "foo.com"))

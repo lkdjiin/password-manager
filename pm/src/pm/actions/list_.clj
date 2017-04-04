@@ -1,11 +1,17 @@
-(ns pm.actions.list_)
+(ns pm.actions.list_
+  (:require [pm.messages :refer :all]))
+
 (use '[clojure.java.shell :only [sh]])
 
 (declare curl-command curl-arg format-output)
 
 (defn action
   []
-  (format-output (:out (curl-command))))
+  (let [result (curl-command)
+        status (:exit result)]
+    (if (zero? status)
+      (format-output (:out result))
+      msg-locked)))
 
 (defn curl-command
   []

@@ -10,7 +10,7 @@
   [site]
   (let [result (curl-command site)
         status (:exit result)]
-    (if (= status 0)
+    (if (zero? status)
       (:out result)
       msg-locked)))
 
