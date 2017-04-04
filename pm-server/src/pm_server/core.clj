@@ -28,6 +28,10 @@
         others (dissoc params :q :p)]
     (respond-with (db/insert (:main-pwd request) site-name site-pwd others))))
 
+(defn route-init
+  [request]
+  (respond-with (db/init (:main-pwd request))))
+
 (defn route
   [path request]
   (= path (:uri request)))
@@ -35,6 +39,7 @@
 (defn routing
   [request]
   (cond
+    (route "/init" request) (route-init request)
     (route "/list" request) (route-list request)
     (route "/show" request) (route-show request)
     (route "/rm" request) (route-rm request)

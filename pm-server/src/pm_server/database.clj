@@ -87,3 +87,7 @@
   (let [k (crypt/encrypt (name (first property)) main-pwd)
         v (crypt/encrypt (last property) main-pwd)]
     {:site_id id :key k :value v}))
+
+(defn init
+  [main-pwd]
+  (sql/insert! db :mainpass {:crypted (crypt/encrypt main-pwd main-pwd)}))

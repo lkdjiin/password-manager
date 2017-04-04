@@ -26,6 +26,16 @@
     (is (= (:headers (route-insert {})) {"Content-Type" "text/plain"}))
     (is (= (:body (route-insert {})) "ok"))))
 
+(deftest test-route-init
+  (with-redefs [pm-server.database/init (constantly "ok")]
+    (is (= (:status (route-init {})) 200))
+    (is (= (:headers (route-init {})) {"Content-Type" "text/plain"}))
+    (is (= (:body (route-init {})) "ok"))))
+
 (deftest test-route
   (is (true? (route "foo" {:uri "foo"})))
   (is (false? (route "foo" {:uri "bar"}))))
+
+(deftest test-routing
+  (with-redefs [pm-server.database/init (constantly "ok")]
+    (is (= (:body (routing {:uri "/init"})) "ok"))))
