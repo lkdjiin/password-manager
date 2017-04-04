@@ -8,19 +8,19 @@
 (def serverlog "/home/xavier/.pm/server.log")
 
 (def unlocked  "Unlocked for 5 minutes")
+(def already-up "Already up and running")
 
 (defn launch-server
   [pwd]
   (sh "sh"
       "-c"
-      (str "nohup java -jar " servername " " pwd " &>> " serverlog " &")))
+      (str "nohup java -jar " servername " " pwd " &>> " serverlog " &"))
+  unlocked)
 
 (defn action
   []
-  (launch-server (input/read-password))
-  (println unlocked))
+  (launch-server (input/read-password)))
 
 (defn upwarning
   [pwd]
-  (launch-server pwd)
-  (println unlocked))
+  (launch-server pwd))

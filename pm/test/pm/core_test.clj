@@ -2,18 +2,6 @@
   (:require [clojure.test :refer :all]
             [pm.core :refer :all]))
 
-(deftest test-up
-  (with-redefs [pm.actions.up/launch-server (constantly true)
-                exit-now! (constantly true)]
-    (is (= (with-out-str (with-in-str "pass" (-main "up")))
-           "Password:Unlocked for 5 minutes\n"))))
-
-(deftest test-upwarning
-  (with-redefs [pm.actions.up/launch-server (constantly true)
-                exit-now! (constantly true)]
-    (is (= (with-out-str (-main "upwarning" "pass"))
-           "Unlocked for 5 minutes\n"))))
-
 (deftest test-show
   (let [response {:exit 0 :out "password" :err ""}]
     (with-redefs [pm.actions.show/curl-command (fn [_] response)

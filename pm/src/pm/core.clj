@@ -15,8 +15,8 @@
   [& args]
   (let [action (first args)]
     (cond
-      (= "up" action) (up/action)
-      (= "upwarning" action) (up/upwarning (second args))
+      (= "up" action) (println (up/action))
+      (= "upwarning" action) (println (up/upwarning (second args)))
       (= "show" action) (println (show/action (second args)))
       (= "insert" action) (println (insert/action (rest args)))
       (= "list" action) (println (list_/action))
