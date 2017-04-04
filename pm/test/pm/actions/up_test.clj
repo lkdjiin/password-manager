@@ -3,11 +3,9 @@
             [pm.actions.up :refer :all]))
 
 (deftest test-up
-  (with-redefs [already-up? (constantly false)
-                launch-server (constantly "ok")]
+  (with-redefs [launch-server (constantly "ok")]
     (is (= (with-in-str "pass" (action)) "ok"))))
 
 (deftest test-upwarning
-  (with-redefs [already-up? (constantly false)
-                launch-server (constantly "ok")]
+  (with-redefs [launch-server (constantly "ok")]
     (is (= (upwarning "pass")) "ok")))

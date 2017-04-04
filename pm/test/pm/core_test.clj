@@ -2,6 +2,12 @@
   (:require [clojure.test :refer :all]
             [pm.core :refer :all]))
 
+(deftest test-init
+  (let [response {:exit 0 :out "" :err ""}]
+    (with-redefs [pm.actions.init/curl-command (fn [] response)
+                  exit-now! (constantly true)]
+      (is (= (with-out-str (-main "init")) "Database initialized\n")))))
+
 (deftest test-show
   (let [response {:exit 0 :out "password" :err ""}]
     (with-redefs [pm.actions.show/curl-command (fn [_] response)
