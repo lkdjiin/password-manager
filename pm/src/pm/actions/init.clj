@@ -1,22 +1,17 @@
 (ns pm.actions.init
-  (:require [pm.messages :refer :all]))
+  (:require [pm.messages :refer :all]
+            [pm.server :refer :all]
+            [pm.input :as input]))
 
 (use '[clojure.java.shell :only [sh]])
 
-(declare curl-command curl-arg)
+(declare launch-server)
 
 (defn action
   []
-  (let [result (curl-command)
-        status (:exit result)]
-    (if (zero? status)
-      "Database initialized"
-      msg-locked)))
+  (launch-server (input/read-password-clear))
+  msg-initialized)
 
-(defn curl-command
-  []
-  (sh "sh" "-c" (str "curl " (curl-arg))))
-
-(defn curl-arg
-  []
-  "'http://localhost:9909/init'")
+(defn launch-server
+  [pwd]
+  (sh "sh" "-c" (str "java -jar " (servername) " " pwd " init")))

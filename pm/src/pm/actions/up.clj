@@ -10,7 +10,7 @@
   [pwd]
   (sh "sh"
       "-c"
-      (str "nohup java -jar " servername " " pwd " &>> " serverlog " &"))
+      (str "nohup java -jar " (servername) " " pwd " &>> " (serverlog) " &"))
   unlocked)
 
 (defn action

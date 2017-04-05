@@ -10,3 +10,11 @@
   (if (System/console)
     (String. (.readPassword (System/console)))
     (read-line)))
+
+(defn read-password-clear
+  "Read a password from the console. The password is **written** as you
+  type it."
+  []
+  (print "Password: ")
+  (flush)
+  (read-line))

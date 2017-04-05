@@ -3,10 +3,10 @@
             [pm.core :refer :all]))
 
 (deftest test-init
-  (let [response {:exit 0 :out "" :err ""}]
-    (with-redefs [pm.actions.init/curl-command (fn [] response)
-                  exit-now! (constantly true)]
-      (is (= (with-out-str (-main "init")) "Database initialized\n")))))
+  (with-redefs [pm.actions.init/launch-server (constantly true)
+                exit-now! (constantly true)]
+    (is (= (with-out-str (with-in-str "pass" (-main "init")))
+           "Password: Database initialized\n"))))
 
 (deftest test-show
   (let [response {:exit 0 :out "password" :err ""}]
