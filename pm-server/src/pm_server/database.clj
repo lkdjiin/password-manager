@@ -3,7 +3,7 @@
             [pm-server.crypt :as crypt]))
 
 (declare last-inserted-id property-data properties? properties-string
-         entry-for-list props-for-list)
+         entry-for-list props-for-list pass-from-db)
 
 (def db-filename (str (System/getProperty "user.home") "/.pm/db.sqlite"))
 (def connection-uri (str "jdbc:sqlite:" db-filename "?foreign_keys=on;"))
@@ -91,3 +91,16 @@
 (defn init
   [main-pwd]
   (sql/insert! db :mainpass {:crypted (crypt/encrypt main-pwd main-pwd)}))
+
+(defn check
+  "Returns true if the main password, once crypted, is the same as the
+  one stored in database. Returns false if the two passwords are not the
+  same."
+  [main-pwd]
+  (= (:crypted (first (pass-from-db)))
+     (crypt/encrypt main-pwd main-pwd)))
+
+(defn pass-from-db
+  "Returns the crypted main password from the database."
+  []
+  (sql/query db ["select crypted from mainpass where id=1"]))

@@ -30,6 +30,17 @@
         others (dissoc params :q :p)]
     (respond-with (db/insert (:main-pwd request) site-name site-pwd others))))
 
+(defn route-check
+  [request]
+  (if (db/check (:main-pwd request))
+    (-> "ok"
+        response
+        (content-type "text/plain"))
+    (-> "Wrong password"
+        response
+        (content-type "text/plain")
+        (status 401))))
+
 (defn route
   [path request]
   (= path (:uri request)))
@@ -41,6 +52,7 @@
     (route "/show" request) (route-show request)
     (route "/rm" request) (route-rm request)
     (route "/insert" request) (route-insert request)
+    (route "/check" request) (route-check request)
     :else {:status 404 :headers {} :body ""}))
 
 (defn keywordize-params [handler]

@@ -19,3 +19,9 @@
                        :props nil}]
     (is (= (entry-for-list secret-key with-props) "a (1, 2)"))
     (is (= (entry-for-list secret-key without-props) "a"))))
+
+(deftest test-check
+  (with-redefs [pass-from-db
+                (fn [] '({:crypted "Qde+pXGa3iCBl3/ugsZSTw=="}))]
+    (is (true? (check "foobar")))
+    (is (false? (check "barbaz")))))

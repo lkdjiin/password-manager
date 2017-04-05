@@ -26,6 +26,19 @@
     (is (= (:headers (route-insert {})) {"Content-Type" "text/plain"}))
     (is (= (:body (route-insert {})) "ok"))))
 
+(deftest test-check
+  (with-redefs [pm-server.database/check (constantly true)]
+    (is (= (:headers (route-check {})) {"Content-Type" "text/plain"}))
+    (is (= (:body (route-check {})) "ok"))
+    (is (= (:status (route-check {})) 200)))
+  (with-redefs [pm-server.database/check (constantly false)]
+    (is (= (:status (route-check {})) 401))
+    (is (= (:body (route-check {})) "Wrong password"))))
+
+(deftest test-routing
+  (with-redefs [route-check (constantly "fine")]
+    (is (= (routing {:uri "/check"}) "fine"))))
+
 (deftest test-route
   (is (true? (route "foo" {:uri "foo"})))
   (is (false? (route "foo" {:uri "bar"}))))
