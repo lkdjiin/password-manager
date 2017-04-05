@@ -7,6 +7,8 @@
      'ring.adapter.jetty
      'ring.middleware.params)
 
+(declare init run-app initialization?)
+
 (defn respond-with [text]
   (content-type (response text) "text/plain"))
 
@@ -28,10 +30,6 @@
         others (dissoc params :q :p)]
     (respond-with (db/insert (:main-pwd request) site-name site-pwd others))))
 
-(defn route-init
-  [request]
-  (respond-with (db/init (:main-pwd request))))
-
 (defn route
   [path request]
   (= path (:uri request)))
@@ -39,7 +37,6 @@
 (defn routing
   [request]
   (cond
-    (route "/init" request) (route-init request)
     (route "/list" request) (route-list request)
     (route "/show" request) (route-show request)
     (route "/rm" request) (route-rm request)
@@ -57,6 +54,22 @@
 
 (defn -main
   [& args]
+  (if (initialization? args)
+    (init (first args))
+    (run-app args)))
+
+(defn initialization?
+  [args]
+  (and (= 2 (count args))
+       (= "init" (second args))))
+
+(defn init
+  [main-pwd]
+  (db/init main-pwd)
+  (security/exit-now!))
+
+(defn run-app
+  [args]
   (security/exit-in-future)
   (def app
     (-> routing
