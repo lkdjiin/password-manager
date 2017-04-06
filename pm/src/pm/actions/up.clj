@@ -34,5 +34,8 @@
 
 (defn http-check
   []
-  (client/get "http://localhost:9909/check"))
-
+  ; FIXME Some time is needed for the server to be opened. But how many time
+  ; exactly? It's should be dependent of the machine. It's surely better to
+  ; wait less time (maybe 300ms) but, inside a loop.
+  (Thread/sleep 1000)
+  (client/get "http://localhost:9909/check" {:throw-exceptions false}))
