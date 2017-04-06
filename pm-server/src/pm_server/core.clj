@@ -36,10 +36,12 @@
     (-> "ok"
         response
         (content-type "text/plain"))
-    (-> "Wrong password"
-        response
-        (content-type "text/plain")
-        (status 401))))
+    (do
+      (security/exit-in-future 500)
+      (-> "Wrong password"
+          response
+          (content-type "text/plain")
+          (status 401)))))
 
 (defn route
   [path request]

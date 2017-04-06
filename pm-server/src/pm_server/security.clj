@@ -5,6 +5,6 @@
   (System/exit 0))
 
 (defn exit-in-future
-  "Close this server in 5 minutes"
-  []
-  (future (Thread/sleep 300000) (exit-now!)))
+  "Close this server in 5 minutes by default"
+  [& [millisecondes]]
+  (future (Thread/sleep (or millisecondes 300000)) (exit-now!)))

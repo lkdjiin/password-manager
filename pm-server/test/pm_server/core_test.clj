@@ -31,7 +31,8 @@
     (is (= (:headers (route-check {})) {"Content-Type" "text/plain"}))
     (is (= (:body (route-check {})) "ok"))
     (is (= (:status (route-check {})) 200)))
-  (with-redefs [pm-server.database/check (constantly false)]
+  (with-redefs [pm-server.database/check (constantly false)
+                pm-server.security/exit-now! (constantly true)]
     (is (= (:status (route-check {})) 401))
     (is (= (:body (route-check {})) "Wrong password"))))
 
